@@ -1,0 +1,152 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Type Check & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_USERNAME }}/finance-frontend
+          tags: |
+            type=sha,prefix=,format=short
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: production
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+
+            IMAGE="${{ secrets.DOCKER_USERNAME }}/finance-frontend:${{ needs.build-and-push.outputs.image_tag }}"
+
+            echo "Pulling image: $IMAGE"
+            docker pull "$IMAGE"
+
+            echo "Ensuring finance-net network exists..."
+            docker network create finance-net 2>/dev/null || true
+
+            echo "Preserving old container for rollback..."
+            docker rename finance-frontend finance-frontend-prev 2>/dev/null || true
+
+            echo "Starting new container..."
+            docker run -d \
+              --name finance-frontend \
+              --restart unless-stopped \
+              --network finance-net \
+              -p 80:80 \
+              "$IMAGE"
+
+            echo "Waiting for health check (up to 60s)..."
+            HEALTH_OK=false
+            for i in $(seq 1 12); do
+              if curl -sf http://localhost/ > /dev/null 2>&1; then
+                echo "Health check passed on attempt $i"
+                HEALTH_OK=true
+                break
+              fi
+              echo "Attempt $i/12 failed, retrying in 5s..."
+              sleep 5
+            done
+
+            if [ "$HEALTH_OK" = "false" ]; then
+              echo "Health check failed — rolling back to previous container..."
+              docker stop finance-frontend || true
+              docker rm finance-frontend || true
+              if docker inspect finance-frontend-prev > /dev/null 2>&1; then
+                docker rename finance-frontend-prev finance-frontend
+                docker start finance-frontend
+                echo "Rollback complete. Previous container restored."
+              else
+                echo "No previous container to restore."
+              fi
+              exit 1
+            fi
+
+            echo "Removing previous container..."
+            docker stop finance-frontend-prev 2>/dev/null || true
+            docker rm finance-frontend-prev 2>/dev/null || true
+
+            echo "Removing dangling images..."
+            docker image prune -f
