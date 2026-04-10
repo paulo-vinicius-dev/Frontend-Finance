@@ -82,7 +82,7 @@ export function BudgetForm({ budget, onSuccess }: BudgetFormProps) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
           <Label htmlFor="budget-month">Mês *</Label>
-          <Select id="budget-month" aria-invalid={!!errors.month} {...register('month')}>
+          <Select id="budget-month" aria-invalid={!!errors.month} {...register('month', { valueAsNumber: true })}>
             {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
               <option key={m} value={m}>
                 {new Date(2000, m - 1).toLocaleString('pt-BR', { month: 'long' })}
@@ -97,7 +97,7 @@ export function BudgetForm({ budget, onSuccess }: BudgetFormProps) {
             type="number"
             placeholder="2026"
             aria-invalid={!!errors.year}
-            {...register('year')}
+            {...register('year', { valueAsNumber: true })}
           />
         </div>
       </div>
