@@ -3,8 +3,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { MoonIcon, SunIcon, ArrowLeftOnRectangleIcon, BellIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
 import { useCurrentUser, useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { useTheme } from '@/hooks/useTheme'
 import { useCurrentMonthAlertCount } from '@/features/alerts/queries/alert.queries'
 import { HelpModal } from '@/components/HelpModal'
 import { useTour } from '@/hooks/useTour'
@@ -21,39 +22,9 @@ export default function Topbar({ isSidebarCollapsed, onToggleSidebar }: TopbarPr
   const user = useCurrentUser()
   const logout = useAuthStore((s) => s.logout)
   const alertCount = useCurrentMonthAlertCount()
-  const [isDark, setIsDark] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const { startTour } = useTour()
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem('theme')
-    const isDarkMode = storedTheme === 'dark'
-
-    setIsDark(isDarkMode)
-
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      if (!storedTheme) {
-        localStorage.setItem('theme', 'light')
-      }
-    }
-  }, [])
-
-  const toggleDarkMode = () => {
-    const root = document.documentElement
-    const newIsDark = !isDark
-    setIsDark(newIsDark)
-
-    if (newIsDark) {
-      root.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      root.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }
+  const { isDark, toggle: toggleDarkMode } = useTheme()
 
   const handleLogout = () => {
     logout()
