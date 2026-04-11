@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
+import AdminRoute from './AdminRoute'
 import AppLayout from '@/layout/AppLayout'
 import LoginPage from '@/features/auth/LoginPage'
 import RegisterPage from '@/features/auth/RegisterPage'
@@ -12,6 +13,7 @@ import BudgetsPage from '@/features/budgets/BudgetsPage'
 import InsightsPage from '@/features/insights/InsightsPage'
 import AlertsPage from '@/features/alerts/AlertsPage'
 import RecurringPage from '@/features/recurring/RecurringPage'
+import AdminUsersPage from '@/features/admin/AdminUsersPage'
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +40,13 @@ export const router = createBrowserRouter([
           { path: 'insights', element: <InsightsPage /> },
           { path: 'alerts', element: <AlertsPage /> },
           { path: 'recurring', element: <RecurringPage /> },
+          // Admin-only routes
+          {
+            element: <AdminRoute />,
+            children: [
+              { path: 'admin/users', element: <AdminUsersPage /> },
+            ],
+          },
         ],
       },
     ],

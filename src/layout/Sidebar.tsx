@@ -9,8 +9,10 @@ import {
   LightBulbIcon,
   BellIcon,
   ArrowPathIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/cn'
+import { useCurrentUser } from '@/store/authStore'
 
 type SidebarProps = {
   isCollapsed: boolean
@@ -29,6 +31,9 @@ const navItems = [
 ]
 
 export default function Sidebar({ isCollapsed }: SidebarProps) {
+  const user = useCurrentUser()
+  const isAdmin = user?.roles?.includes('ADMIN') ?? false
+
   return (
     <aside
       className={cn(
@@ -64,6 +69,31 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
             </NavLink>
           )
         })}
+
+        {isAdmin && (
+          <>
+            <div className={cn('mt-4 mb-1', isCollapsed ? 'px-0' : 'px-3')}>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600">
+                Administração
+              </p>
+            </div>
+            <NavLink
+              to="/admin/users"
+              title="Usuários"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors gap-3',
+                  isActive
+                    ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300'
+                    : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
+                )
+              }
+            >
+              <UsersIcon className="h-5 w-5 shrink-0" />
+              Usuários
+            </NavLink>
+          </>
+        )}
       </nav>
     </aside>
   )

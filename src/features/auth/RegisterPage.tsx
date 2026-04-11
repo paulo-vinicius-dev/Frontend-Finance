@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { MoonIcon, SunIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
 import { registerSchema, type RegisterFormValues } from './authSchemas'
 import { apiClient } from '@/lib/axios'
 import { Button, Input, FormField } from '@/components/ui'
@@ -34,6 +34,21 @@ export default function RegisterPage() {
   return (
     <>
       <AuthBackground isDark={isDark} />
+
+      {/* Back button */}
+      <Link
+        to="/login"
+        aria-label="Voltar para login"
+        className={[
+          'fixed top-4 left-4 z-50 flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+          isDark
+            ? 'bg-white/10 text-white hover:bg-white/20'
+            : 'bg-black/5 text-gray-700 hover:bg-black/10',
+        ].join(' ')}
+      >
+        <ArrowLeftIcon className="h-4 w-4" />
+        Voltar
+      </Link>
 
       {/* Theme toggle */}
       <button
