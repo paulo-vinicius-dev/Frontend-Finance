@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import axios from 'axios'
 import { loginSchema, type LoginFormValues } from './authSchemas'
 import { useAuthStore } from '@/store/authStore'
 import { apiClient } from '@/lib/axios'
@@ -31,7 +30,7 @@ export default function LoginPage() {
       logout()
       queryClient.clear()
 
-      const { data: auth } = await axios.post<AuthResponse>(
+      const { data: auth } = await apiClient.post<AuthResponse>(
         '/api/v1/auth/login',
         values
       )
