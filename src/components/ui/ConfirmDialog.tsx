@@ -22,10 +22,10 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      <div className="space-y-4">
-        <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={onClose}>
+      <div className="space-y-5">
+        <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">{description}</p>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
           <Button
@@ -34,7 +34,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
           >
-            {confirmLabel}
+            {loading ? 'Aguarde...' : confirmLabel}
           </Button>
         </div>
       </div>

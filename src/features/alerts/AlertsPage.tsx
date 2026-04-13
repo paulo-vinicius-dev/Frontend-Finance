@@ -3,6 +3,7 @@ import { useAlerts } from './queries/alert.queries'
 import type { AlertSeverity } from './types/alert.types'
 import { Card, CardContent, Spinner } from '@/components/ui'
 import { AlertTriangle, XCircle, Info } from 'lucide-react'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/cn'
 
 const SEVERITY_CONFIG: Record<AlertSeverity, { icon: React.ElementType; color: string; border: string }> = {
@@ -15,7 +16,7 @@ export default function AlertsPage() {
   const now = new Date()
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [year, setYear] = useState(now.getFullYear())
-  const { data, isLoading } = useAlerts(month, year)
+  const { data, isLoading, isFetching, refetch } = useAlerts(month, year)
 
   const alerts = data ?? []
   const danger = alerts.filter((a) => a.severity === 'DANGER')
@@ -25,9 +26,18 @@ export default function AlertsPage() {
 
   return (
     <div className="space-y-6">
-      <div data-tour="alerts-header" className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <h1 className="text-3xl font-bold">Alertas</h1>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800"
+            title="Atualizar alertas"
+          >
+            <ArrowPathIcon className={cn('h-4 w-4', isFetching && 'animate-spin')} />
+            {isFetching ? 'Atualizando...' : 'Atualizar'}
+          </button>
           <select
             value={month}
             onChange={(e) => setMonth(Number(e.target.value))}
@@ -60,7 +70,7 @@ export default function AlertsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div data-tour="alerts-list" className="space-y-3">
+        <div className="space-y-3">
           {sorted.map((alert, i) => {
             const config = SEVERITY_CONFIG[alert.severity]
             const Icon = config.icon

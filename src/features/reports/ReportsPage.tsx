@@ -24,7 +24,7 @@ export default function ReportsPage() {
       <h1 className="text-3xl font-bold">Relatórios</h1>
 
       {/* Period filter */}
-      <div data-tour="reports-filters" className="flex flex-wrap gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/50">
+      <div className="flex flex-wrap gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/50">
         <div className="space-y-1">
           <Label htmlFor="report-start">Data inicial</Label>
           <Input
@@ -46,7 +46,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Summary cards */}
-      <section data-tour="reports-summary">
+      <section>
         <h2 className="mb-4 text-xl font-semibold">Resumo financeiro</h2>
         {summary.isLoading ? (
           <div className="flex justify-center py-8"><Spinner className="h-6 w-6" /></div>
@@ -89,7 +89,7 @@ export default function ReportsPage() {
       </section>
 
       {/* By category */}
-      <section data-tour="reports-by-category">
+      <section>
         <h2 className="mb-4 text-xl font-semibold">Despesas por categoria</h2>
         {byCategory.isLoading ? (
           <div className="flex justify-center py-8"><Spinner className="h-6 w-6" /></div>
@@ -123,7 +123,7 @@ export default function ReportsPage() {
       </section>
 
       {/* Monthly evolution */}
-      <section data-tour="reports-monthly">
+      <section>
         <div className="mb-4 flex items-center gap-4">
           <h2 className="text-xl font-semibold">Evolução mensal</h2>
           <select

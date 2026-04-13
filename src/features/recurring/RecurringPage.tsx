@@ -35,9 +35,9 @@ export default function RecurringPage() {
 
   return (
     <div className="space-y-6">
-      <div data-tour="recurring-header" className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Movimentações Recorrentes</h1>
-        <Button data-tour="recurring-new-btn" onClick={() => { setSelected(null); setIsFormOpen(true) }}>
+        <Button onClick={() => { setSelected(null); setIsFormOpen(true) }}>
           <Plus className="mr-2 h-4 w-4" />
           Nova Recorrência
         </Button>
@@ -55,7 +55,7 @@ export default function RecurringPage() {
           }
         />
       ) : (
-        <div data-tour="recurring-list" className="space-y-3">
+        <div className="space-y-3">
           {items.map((r) => (
             <RecurringCard
               key={r.id}

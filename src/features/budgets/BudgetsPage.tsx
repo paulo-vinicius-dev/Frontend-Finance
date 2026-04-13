@@ -38,16 +38,16 @@ export default function BudgetsPage() {
 
   return (
     <div className="space-y-6">
-      <div data-tour="budgets-header" className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Orçamentos</h1>
-        <Button data-tour="budgets-new-btn" onClick={() => { setSelectedBudget(null); setIsFormOpen(true) }}>
+        <Button onClick={() => { setSelectedBudget(null); setIsFormOpen(true) }}>
           <Plus className="mr-2 h-4 w-4" />
           Novo Orçamento
         </Button>
       </div>
 
       {/* Period selector */}
-      <div data-tour="budgets-period" className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/50">
+      <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/50">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Período:</span>
         <select
           value={month}
@@ -85,7 +85,7 @@ export default function BudgetsPage() {
           }
         />
       ) : (
-        <div data-tour="budgets-list" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {budgets.map((budget) => (
             <Card key={budget.id}>
               <CardContent className="pt-4 space-y-4">

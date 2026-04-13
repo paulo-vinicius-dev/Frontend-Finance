@@ -11,9 +11,9 @@ const buttonVariants = cva(
         default:
           "border border-transparent bg-blue-600 text-white shadow-sm hover:-translate-y-[1px] hover:bg-blue-700 hover:shadow-md dark:bg-blue-500 dark:hover:bg-blue-400",
         destructive:
-          "border border-transparent bg-destructive text-destructive-foreground shadow-sm hover:-translate-y-[1px] hover:shadow-md hover:brightness-110",
+          "border border-transparent bg-red-600 text-white shadow-sm hover:-translate-y-[1px] hover:bg-red-700 hover:shadow-md dark:bg-red-600 dark:hover:bg-red-500",
         outline:
-          "border border-gray-300 bg-white text-gray-800 shadow-sm hover:-translate-y-[1px] hover:bg-gray-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800",
+          "border border-gray-300 bg-white text-gray-800 shadow-sm hover:-translate-y-[1px] hover:bg-gray-50 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700",
         secondary:
           "border border-blue-200 bg-blue-50 text-blue-700 shadow-sm hover:-translate-y-[1px] hover:bg-blue-100 hover:shadow-md dark:border-blue-900/50 dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/50",
         ghost:

@@ -8,8 +8,6 @@ import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useTheme } from '@/hooks/useTheme'
 import { useCurrentMonthAlertCount } from '@/features/alerts/queries/alert.queries'
 import { HelpModal } from '@/components/HelpModal'
-import { useTour } from '@/hooks/useTour'
-import { MapIcon } from '@heroicons/react/24/outline'
 
 type TopbarProps = {
   isSidebarCollapsed: boolean
@@ -23,7 +21,6 @@ export default function Topbar({ isSidebarCollapsed, onToggleSidebar }: TopbarPr
   const logout = useAuthStore((s) => s.logout)
   const alertCount = useCurrentMonthAlertCount()
   const [isHelpOpen, setIsHelpOpen] = useState(false)
-  const { startTour } = useTour()
   const { isDark, toggle: toggleDarkMode } = useTheme()
 
   const handleLogout = () => {
@@ -56,16 +53,6 @@ export default function Topbar({ isSidebarCollapsed, onToggleSidebar }: TopbarPr
         </div>
         <div className="flex items-center gap-2">
           <button
-            data-tour="tour-button"
-            onClick={startTour}
-            className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
-            aria-label="Tour guiado"
-            title="Tour guiado — conheça o sistema completo"
-          >
-            <MapIcon className="h-5 w-5" />
-          </button>
-          <button
-            data-tour="help-button"
             onClick={() => setIsHelpOpen(true)}
             className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
             aria-label="Ajuda"

@@ -3,6 +3,7 @@ import { useInsights } from './queries/insight.queries'
 import type { InsightType } from './types/insight.types'
 import { Card, CardContent, Spinner } from '@/components/ui'
 import { TrendingUp, TrendingDown, PiggyBank, Tag, AlertTriangle, XCircle } from 'lucide-react'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/cn'
 
 const INSIGHT_CONFIG: Record<InsightType, { icon: React.ElementType; color: string; bg: string }> = {
@@ -18,15 +19,24 @@ export default function InsightsPage() {
   const now = new Date()
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [year, setYear] = useState(now.getFullYear())
-  const { data, isLoading } = useInsights(month, year)
+  const { data, isLoading, isFetching, refetch } = useInsights(month, year)
 
   const insights = data ?? []
 
   return (
     <div className="space-y-6">
-      <div data-tour="insights-header" className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <h1 className="text-3xl font-bold">Insights</h1>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800"
+            title="Atualizar insights"
+          >
+            <ArrowPathIcon className={cn('h-4 w-4', isFetching && 'animate-spin')} />
+            {isFetching ? 'Atualizando...' : 'Atualizar'}
+          </button>
           <select
             value={month}
             onChange={(e) => setMonth(Number(e.target.value))}
@@ -59,7 +69,7 @@ export default function InsightsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div data-tour="insights-list" className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {insights.map((insight, i) => {
             const config = INSIGHT_CONFIG[insight.type] ?? INSIGHT_CONFIG.SAVINGS_RATE
             const Icon = config.icon

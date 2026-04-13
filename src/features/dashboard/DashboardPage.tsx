@@ -19,6 +19,7 @@ import { formatCurrency, formatDate } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { useDashboardOverview } from './queries/dashboard.queries'
 import type { DashboardRangePreset } from './types/dashboard.types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 const CATEGORY_COLORS = ['#0f766e', '#ea580c', '#2563eb', '#7c3aed', '#15803d', '#dc2626', '#4f46e5']
 
@@ -104,7 +105,7 @@ export default function DashboardPage() {
     return resolveDateRange(preset)
   }, [preset, customStartDate, customEndDate])
 
-  const { data, isLoading, isFetching } = useDashboardOverview(activeFilters)
+  const { data, isLoading, isFetching, refetch } = useDashboardOverview(activeFilters)
 
   const summary = data?.summary
   const totalBalance = data?.totalBalance ?? 0
@@ -123,7 +124,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <section className="rounded-2xl bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 p-6 text-white shadow-xl">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div data-tour="dashboard-hero" className="space-y-2">
+          <div className="space-y-2">
             <p className="text-sm font-medium uppercase tracking-[0.08em] text-teal-100">Painel financeiro</p>
             <h1 className="text-3xl font-bold leading-tight md:text-4xl">Dashboard estratégico</h1>
             <p className="max-w-2xl text-sm text-cyan-100 md:text-base">
@@ -138,14 +139,20 @@ export default function DashboardPage() {
               </p>
               <p className="mt-0.5 text-xs text-white/60">total de todas as transações</p>
             </div>
-            <div className="rounded-xl border border-white/30 bg-white/10 px-4 py-2 text-sm">
-              {isFetching ? 'Atualizando dados...' : 'Dados atualizados'}
-            </div>
+            <button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20 disabled:opacity-60"
+              title="Atualizar dados"
+            >
+              <ArrowPathIcon className={cn('h-4 w-4', isFetching && 'animate-spin')} />
+              {isFetching ? 'Atualizando...' : 'Atualizar'}
+            </button>
           </div>
         </div>
       </section>
 
-      <section data-tour="dashboard-filters" className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:p-5">
+      <section className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:p-5">
         <div className="flex flex-wrap gap-2">
           {RANGE_PRESETS.map((option) => (
             <Button
@@ -190,7 +197,7 @@ export default function DashboardPage() {
       ) : (
         <>
           {summary && (
-            <section data-tour="dashboard-kpis" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm text-gray-500 dark:text-gray-400">Receitas</CardTitle>
@@ -261,7 +268,7 @@ export default function DashboardPage() {
             </section>
           )}
  
-          <section data-tour="dashboard-charts" className="grid gap-4 xl:grid-cols-2">
+          <section className="grid gap-4 xl:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Despesas por categoria</CardTitle>
@@ -330,7 +337,7 @@ export default function DashboardPage() {
             </Card>
           </section>
 
-          <section data-tour="dashboard-bottom" className="grid gap-4 xl:grid-cols-3">
+          <section className="grid gap-4 xl:grid-cols-3">
             <Card className="xl:col-span-2">
               <CardHeader>
                 <CardTitle>Orçamentos por categoria</CardTitle>

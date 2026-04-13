@@ -72,15 +72,15 @@ export function TransactionList() {
 
   return (
     <div className="space-y-6">
-      <div data-tour="transactions-header" className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Transações</h1>
-        <Button data-tour="transactions-new-btn" onClick={() => { setSelectedTransaction(null); setIsFormOpen(true) }}>
+        <Button onClick={() => { setSelectedTransaction(null); setIsFormOpen(true) }}>
           <Plus className="mr-2 h-4 w-4" />
           Nova Transação
         </Button>
       </div>
 
-      <div data-tour="transactions-filters">
+      <div>
         <TransactionFilters filters={filters} onFiltersChange={setFilters} />
       </div>
 
@@ -90,7 +90,7 @@ export function TransactionList() {
           description="Tente ajustar os filtros"
         />
       ) : (
-        <div data-tour="transactions-list" className="space-y-3">
+        <div className="space-y-3">
           {filteredTransactions.map((transaction) => (
             <div
               key={transaction.id}

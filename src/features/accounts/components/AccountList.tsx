@@ -67,15 +67,15 @@ export function AccountList() {
 
   return (
     <div className="space-y-6">
-      <div data-tour="accounts-header" className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Contas</h1>
-        <Button data-tour="accounts-new-btn" onClick={() => { setSelectedAccount(null); setIsFormOpen(true) }}>
+        <Button onClick={() => { setSelectedAccount(null); setIsFormOpen(true) }}>
           <Plus className="mr-2 h-4 w-4" />
           Nova Conta
         </Button>
       </div>
 
-      <div data-tour="accounts-list" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {accounts.map((account) => (
           <Card key={account.id}>
             <CardHeader>
